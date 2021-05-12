@@ -27,10 +27,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.pushButton_8.clicked.connect(lambda: self.add_item("8"))
         self.pushButton_9.clicked.connect(lambda: self.add_item("9"))
         self.pushButton_20.clicked.connect(self.delete_all)
-        self.lineEdit.textChanged.connect(self.print)
-
-    def print(self):
-        print('hola mundo!')
 
     def delete_all(self):
         return self.lineEdit.setText('')
