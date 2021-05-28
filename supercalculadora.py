@@ -6,6 +6,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, *args, **kwargs):
         QtWidgets.QMainWindow.__init__(self, *args, **kwargs)
         self.setupUi(self)
+        self.setWindowTitle("Super-Calcu")
         self.pushButton.clicked.connect(lambda: self.add_item("0"))
         self.pushButton_1.clicked.connect(lambda: self.add_item("1"))
         self.pushButton_11.clicked.connect(self.result)
@@ -32,7 +33,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         return self.lineEdit.setText('')
 
     def result(self):
-        return self.lineEdit.setText(str(eval(self.lineEdit.text().replace('%', '/100'))))
+        try:
+            return self.lineEdit.setText(str(eval(self.lineEdit.text().replace('%', '/100'))))
+        except SyntaxError:
+            return self.lineEdit.setText("")
+        except ZeroDivisionError:
+            return self.lineEdit.setText("No se puede dividir por cero")
+        except NameError:
+            return self.lineEdit.setText("")
 
     def delete_item(self):
         todo = self.lineEdit.text()
@@ -49,18 +57,3 @@ if __name__ == "__main__":
     window = MainWindow()
     window.show()
     app.exec_()
-
-# from PyQt5 import uic, QtWidgets
-# from PyQt5.QtWidgets import QWidget, QMainWindow, QApplication
-# form_class = uic.loadUiType("main.ui")[0]
-
-# class Main(QMainWindow):
-#     def __init__(self):
-#         super(Main, self).__init__()
-#         uic.loadUi("main.ui", self)
-#         self.show()
-
-
-# app = QApplication(sys.argv)
-# window = Main()
-# app.exec_()
