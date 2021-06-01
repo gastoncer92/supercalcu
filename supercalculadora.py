@@ -1,6 +1,7 @@
 from main import *
 from db_calc import *
 import string
+from inspect import currentframe, getframeinfo
 
 
 # pyuic5 -x main.ui -o main.py
@@ -35,6 +36,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actualiza_variables()
         self.pushButton_21.clicked.connect(self.agregar_variable1)
         self.pushButton_22.clicked.connect(self.agregar_variable2)
+        self.pushButton_23.clicked.connect(self.cargar_variable1)
+        self.pushButton_24.clicked.connect(self.cargar_variable2)
+
+    def cargar_variable1(self):
+        var = self.pushButton_21.text()
+        self.add_item(var)
+
+    def cargar_variable2(self):
+        var = self.pushButton_22.text()
+        self.add_item(var)
 
     def actualiza_variables(self):
         conn = connection()
@@ -51,7 +62,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.agregar_variable(2)
 
     def agregar_variable(self, idvar):
-        contenido = self.label_2.text().strip(string.ascii_lowercase)
+        contenido = self.label_2.text()
+        for i in contenido:
+            contenido = contenido.replace(' ', '')
+        for i in string.ascii_lowercase:
+            contenido = contenido.replace(i, '')
+        for i in string.ascii_uppercase:
+            contenido = contenido.replace(i, '')
+        print("en la linea %d" % getframeinfo(currentframe()).lineno)
         print(contenido)
         agregar_variable(idvar, contenido)
         var = ver_variable1(idvar)
@@ -67,7 +85,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def result(self):
         try:
-            self.label_2.setText(str(eval(self.lineEdit.text().replace('%', '/100'))))
+            resultado = str(eval(self.lineEdit.text().replace('%', '/100')))
+            self.label_2.setText("%.2f" % float(resultado))
             return self.lineEdit.setText("")
         except SyntaxError:
             return self.label_2.setText("")
