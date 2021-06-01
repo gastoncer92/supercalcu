@@ -1,6 +1,8 @@
-import sys
 from main import *
+from db_calc import *
+import string
 
+# pyuic5 -x main.ui -o main.py
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, *args, **kwargs):
@@ -28,19 +30,29 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.pushButton_8.clicked.connect(lambda: self.add_item("8"))
         self.pushButton_9.clicked.connect(lambda: self.add_item("9"))
         self.pushButton_20.clicked.connect(self.delete_all)
+        crear_tabla_variables()
+        self.pushButton_21.clicked.connect(self.agregar_variable1)
+        # self.pushButton_22.clicked.connect(self.agregar_variable(id_var=2))
+
+    def agregar_variable1(self):
+        contenido = self.label_2.text().strip(string.ascii_lowercase, string.ascii_uppercase)
+
+        var = ver_variable1()
+        self.pushButton_21.setText('%s' % var)
 
     def delete_all(self):
         return self.lineEdit.setText('')
 
     def result(self):
         try:
-            return self.lineEdit.setText(str(eval(self.lineEdit.text().replace('%', '/100'))))
+            self.label_2.setText(str(eval(self.lineEdit.text().replace('%', '/100'))))
+            return self.lineEdit.setText("")
         except SyntaxError:
-            return self.lineEdit.setText("")
+            return self.label_2.setText("")
         except ZeroDivisionError:
-            return self.lineEdit.setText("No se puede dividir por cero")
+            return self.label_2.setText("No se puede dividir por cero")
         except NameError:
-            return self.lineEdit.setText("")
+            return self.label_2.setText("")
 
     def delete_item(self):
         todo = self.lineEdit.text()
