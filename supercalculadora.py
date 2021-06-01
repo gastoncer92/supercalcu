@@ -2,6 +2,7 @@ from main import *
 from db_calc import *
 import string
 
+
 # pyuic5 -x main.ui -o main.py
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -31,14 +32,35 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.pushButton_9.clicked.connect(lambda: self.add_item("9"))
         self.pushButton_20.clicked.connect(self.delete_all)
         crear_tabla_variables()
+        self.actualiza_variables()
         self.pushButton_21.clicked.connect(self.agregar_variable1)
-        # self.pushButton_22.clicked.connect(self.agregar_variable(id_var=2))
+        self.pushButton_22.clicked.connect(self.agregar_variable2)
+
+    def actualiza_variables(self):
+        conn = connection()
+        cursor = conn.cursor()
+        variable1 = cursor.execute("select variable from variables where id_var=1").fetchone()[0]
+        variable2 = cursor.execute("select variable from variables where id_var=2").fetchone()[0]
+        self.pushButton_21.setText(variable1)
+        self.pushButton_22.setText(variable2)
 
     def agregar_variable1(self):
-        contenido = self.label_2.text().strip(string.ascii_lowercase, string.ascii_uppercase)
+        self.agregar_variable(1)
 
-        var = ver_variable1()
-        self.pushButton_21.setText('%s' % var)
+    def agregar_variable2(self):
+        self.agregar_variable(2)
+
+    def agregar_variable(self, idvar):
+        contenido = self.label_2.text().strip(string.ascii_lowercase)
+        print(contenido)
+        agregar_variable(idvar, contenido)
+        var = ver_variable1(idvar)
+        if idvar == 1:
+            self.pushButton_21.setText('%s' % var)
+        elif idvar == 2:
+            self.pushButton_22.setText('%s' % var)
+        else:
+            print('error')
 
     def delete_all(self):
         return self.lineEdit.setText('')

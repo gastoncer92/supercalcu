@@ -1,5 +1,6 @@
 import sqlite3
 from sqlite3 import Error
+from inspect import currentframe, getframeinfo
 
 
 def connection():
@@ -34,25 +35,21 @@ def agregar_var_a_tabla(id_var, var):
         conn.commit()
         conn.close()
     except ValueError:
-        print('error linea 28')
+        print("error en la linea %d" % getframeinfo(currentframe()).lineno)
 
 
-def ver_variable1():
+def ver_variable1(idvar):
     conn = connection()
     try:
-        var = conn.cursor().execute('select variable from variables where id_var=1').fetchone()[0]
-        print(var)
+        var = conn.cursor().execute('select variable from variables where id_var=(?)', (idvar,)).fetchone()[0]
     except TypeError:
-        var = error
+        var = 0
         print('error')
-    print(var)
     return var
 
 
-def agregar_variable1(var):
+def agregar_variable(id_var, var):
     conn = connection()
     cursor = conn.cursor()
-    try:
-        cursor.execute('UPDATE variables SET variable=(?) WHERE id_var=(?));')
-    except:
-        pass
+    cursor.execute("""UPDATE variables SET variable=(?) WHERE id_var=(?)""", (var, id_var))
+    conn.commit()
